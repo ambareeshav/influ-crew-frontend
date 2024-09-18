@@ -16,7 +16,7 @@ export default function SignupPage() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      await axios.post('http://localhost:8000/signup', { username, email, password })
+      await axios.post('http://127.0.0.1:8000/signup', { username, email, password })
       router.push('/login')
     } catch (error) {
       console.error('Signup failed:', error)
