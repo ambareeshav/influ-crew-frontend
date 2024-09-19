@@ -17,7 +17,7 @@ export default function LoginPage() {
     e.preventDefault()
     setErrorMessage('')  // Reset error message on new login attempt
     try {
-      const response = await axios.post('https://influ-crew-backend-production.up.railway.app/login', { email, password })
+      const response = await axios.post('http://127.0.0.1:8000/login', { email, password })
       localStorage.setItem('accessToken', response.data.access_token)
       router.push('/crews')
     } catch (error) {

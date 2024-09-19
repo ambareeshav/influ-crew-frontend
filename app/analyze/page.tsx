@@ -5,9 +5,11 @@ import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
+import LogoutButton from "@/components/LogoutButton"
+import withAuth from "@/components/withAuth" // Import the HOC
 import axios from 'axios'
 
-export default function AnalyzePage() {
+const AnalyzePage = () => {
   const [keyword, setKeyword] = useState('')
   const [channels, setChannels] = useState('')
   const [result, setResult] = useState('')
@@ -19,7 +21,7 @@ export default function AnalyzePage() {
     setLoading(true) // {{ edit_2 }}
     try {
       const token = localStorage.getItem('accessToken')
-      const response = await axios.post('https://influ-crew-backend-production.up.railway.app/analyze', 
+      const response = await axios.post('http://127.0.0.1:8000/analyze', 
         { keyword, channels: parseInt(channels) },
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -34,52 +36,64 @@ export default function AnalyzePage() {
     }
   }
 
+  const handleBackToCrews = () => { // {{ edit_2 }}
+    router.push('/crews')
+  }
+
   return (
     <div className="flex min-h-screen bg-white text-black">
-    <div className="container mx-auto mt-8">
-      <Card className="w-[400px] mx-auto">
-        <CardHeader>
-          <CardTitle>Analyze Influencers</CardTitle>
-        </CardHeader>
-        <form onSubmit={handleAnalyze}>
-          <CardContent>
-            <div className="grid w-full items-center gap-4">
-              <div className="flex flex-col space-y-1.5">
-                <Input
-                  id="keyword"
-                  placeholder="Keyword"
-                  value={keyword}
-                  onChange={(e) => setKeyword(e.target.value)}
-                />
+      <Button onClick={handleBackToCrews} className="absolute top-4 left-4">Back to Crews</Button>
+      <LogoutButton />
+      <div className="container mx-auto mt-8">
+        <Card className="w-[400px] mx-auto">
+          <CardHeader>
+            <CardTitle>Analyze Influencers</CardTitle>
+          </CardHeader>
+          <form onSubmit={handleAnalyze}>
+            <CardContent>
+              <div className="grid w-full items-center gap-4">
+                <div className="flex flex-col space-y-1.5">
+                  <Input
+                    id="keyword"
+                    placeholder="Keyword"
+                    value={keyword}
+                    onChange={(e) => setKeyword(e.target.value)}
+                  />
+                </div>
+                <div className="flex flex-col space-y-1.5">
+                  <Input
+                    id="channels"
+                    placeholder="Number of Channels"
+                    type="number"
+                    value={channels}
+                    onChange={(e) => setChannels(e.target.value)}
+                  />
+                </div>
               </div>
-              <div className="flex flex-col space-y-1.5">
-                <Input
-                  id="channels"
-                  placeholder="Number of Channels"
-                  type="number"
-                  value={channels}
-                  onChange={(e) => setChannels(e.target.value)}
-                />
-              </div>
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button type="submit" disabled={loading}>
-              {loading ? 'Analyzing...' : result ? 'Analyzed!' : 'Analyze'} {/* {{ edit_3 }} */}
-            </Button>
-          </CardFooter>
-        </form>
-      </Card>
-      {result && (
-        <Card className="w-[100px] h-[10px] mx-auto mt-8">
-          <CardContent className="flex justify-center"> 
-          <Button type="submit" disabled={loading}> 
-          <a href={result} target="_blank" rel="noopener noreferrer">Evaluation</a> 
-          </Button>
-          </CardContent>
+            </CardContent>
+            <CardFooter>
+              <Button type="submit" disabled={loading}>
+                {loading ? 'Analyzing...' : result ? 'Analyzed!' : 'Analyze'} {/* {{ edit_3 }} */}
+              </Button>
+            </CardFooter>
+          </form>
         </Card>
-      )}
-    </div>
+        {result && (
+          <Card className="w-[100px] h-[10px] mx-auto mt-8">
+            <CardContent className="flex justify-center"> 
+              <Button type="submit" disabled={loading}> 
+                <a href={result} target="_blank" rel="noopener noreferrer">Evaluation</a> 
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+      </div>
     </div>
   )
 }
+
+// Use named export
+export const AnalyzePageWithAuth = withAuth(AnalyzePage) // Wrap the component with the HOC
+
+// Default export for the page
+export default AnalyzePageWithAuth

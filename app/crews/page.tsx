@@ -5,8 +5,10 @@ import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import axios from 'axios'
+import LogoutButton from "@/components/LogoutButton"
+import withAuth from "@/components/withAuth" // {{ edit_1 }}
 
-export default function CrewsPage() {
+const CrewsPage = () => {
   const [crews, setCrews] = useState<[string, string][]>([]) // Update state type to handle name and description
   /* const [isSidebarOpen, setIsSidebarOpen] = useState(false) */
   const router = useRouter()
@@ -15,7 +17,7 @@ export default function CrewsPage() {
     const fetchCrews = async () => {
       try {
         const token = localStorage.getItem('accessToken')
-        const response = await axios.get('https://influ-crew-backend-production.up.railway.app/crews', {
+        const response = await axios.get('http://127.0.0.1:8000/crews', {
           headers: { Authorization: `Bearer ${token}` }
         })
         setCrews(response.data)
@@ -37,6 +39,7 @@ export default function CrewsPage() {
  */
   return (
     <div className="flex min-h-screen bg-white text-black">
+      <LogoutButton /> {/* {{ edit_2 }} */}
       {/* Sidebar toggle button */}
       {/* <Button onClick={toggleSidebar} className="flex min-h-screen bg-black text-white hover:text-black hover:bg-black"></Button> */}
 
@@ -74,3 +77,5 @@ export default function CrewsPage() {
     </div>
   )
 }
+
+export default withAuth(CrewsPage) // {{ edit_2 }}
