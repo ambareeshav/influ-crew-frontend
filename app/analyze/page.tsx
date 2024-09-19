@@ -19,7 +19,7 @@ export default function AnalyzePage() {
     setLoading(true) // {{ edit_2 }}
     try {
       const token = localStorage.getItem('accessToken')
-      const response = await axios.post('https://influ-crew-backend.onrender.com/analyze', 
+      const response = await axios.post('https://influ-crew-backend-production.up.railway.app/analyze', 
         { keyword, channels: parseInt(channels) },
         { headers: { Authorization: `Bearer ${token}` } }
       )

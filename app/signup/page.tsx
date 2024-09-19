@@ -11,15 +11,21 @@ export default function SignupPage() {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')  // New state for error messages
   const router = useRouter()
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
+    setErrorMessage('')  // Reset error message
     try {
-      await axios.post('https://influ-crew-backend.onrender.com/signup', { username, email, password })
+      await axios.post('https://influ-crew-backend-production.up.railway.app/signup', { username, email, password })
       router.push('/login')
     } catch (error) {
-      console.error('Signup failed:', error)
+      if (axios.isAxiosError(error) && error.response) {
+        setErrorMessage(error.response.data.detail)  // Set error message from response
+      } else {
+        console.error('Signup failed:', error)
+      }
     }
   }
 
@@ -32,6 +38,7 @@ export default function SignupPage() {
         </CardHeader>
         <form onSubmit={handleSignup}>
           <CardContent>
+            {errorMessage && <p className="text-red-500">{errorMessage}</p>}  {/* Display error message */}
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
                 <Input
