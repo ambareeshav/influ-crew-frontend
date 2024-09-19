@@ -12,7 +12,7 @@ export default function AuthorizePage() {
     const fetchAuthUrl = async () => {
       try {
         const token = localStorage.getItem('accessToken')
-        const response = await axios.post('http://127.0.0.1:8000/authorize', {}, {
+        const response = await axios.post('https://influ-crew-backend.onrender.com/authorize', {}, {
           headers: { Authorization: `Bearer ${token}` }
         })
         setAuthUrl(response.data.auth_url)

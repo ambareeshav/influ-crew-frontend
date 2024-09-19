@@ -15,7 +15,7 @@ export default function CrewsPage() {
     const fetchCrews = async () => {
       try {
         const token = localStorage.getItem('accessToken')
-        const response = await axios.get('http://127.0.0.1:8000/crews', {
+        const response = await axios.get('https://influ-crew-backend.onrender.com/crews', {
           headers: { Authorization: `Bearer ${token}` }
         })
         setCrews(response.data)
@@ -43,7 +43,7 @@ export default function CrewsPage() {
       {/* Sidebar */}
       {isSidebarOpen && (
         <div className="w-64 bg-gray-200 text-black p-4 flex flex-col">
-          <h2 className="text-xl font-bold mb-4">Menu</h2>
+          <h2 className="text-xl font-bold mb-4"></h2>
           <Button onClick={() => router.push('/authorize')} className="bg-black text-white">Authorize</Button>
         </div>
       )}
