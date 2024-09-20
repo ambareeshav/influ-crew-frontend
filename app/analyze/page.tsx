@@ -27,10 +27,12 @@ const AnalyzePage = () => {
     }
     setLoading(true) // {{ edit_4 }}
     try {
-      const response = await axios.post(`${API_URL}/analyze`, 
-        { keyword, channels: parseInt(channels) },
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
+      const response = await axios.post(`${API_URL}/analyze`, {
+        keyword,
+        channels: parseInt(channels)
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
       setResult(response.data.message)
     } catch (error) {
       console.error('Analysis failed:', error)
@@ -91,9 +93,9 @@ const AnalyzePage = () => {
         </Card>
         {result && (
           <Card className="w-[100px] h-[10px] mx-auto mt-8">
-            <CardContent className="flex justify-center"> 
-              <Button type="submit" disabled={loading}> 
-                <a href={result} target="_blank" rel="noopener noreferrer">Evaluation</a> 
+            <CardContent className="flex justify-center">
+              <Button type="submit" disabled={loading}>
+                <a href={result} target="_blank" rel="noopener noreferrer">Evaluation</a>
               </Button>
             </CardContent>
           </Card>
@@ -103,8 +105,8 @@ const AnalyzePage = () => {
   )
 }
 
-// Use named export
-export const AnalyzePageWithAuth = withAuth(AnalyzePage) // Wrap the component with the HOC
+// Wrap the component with the HOC
+const AnalyzePageWithAuth = withAuth(AnalyzePage)
 
 // Default export for the page
 export default AnalyzePageWithAuth

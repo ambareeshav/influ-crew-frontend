@@ -31,7 +31,7 @@ const CrewsPage = () => {
   }, [])
 
   const handleCrewClick = (crew: string) => {
-    router.push(`/analyze`)
+    router.push(`/analyze?crew=${crew}`)
   }
 
 /*   const toggleSidebar = () => {
