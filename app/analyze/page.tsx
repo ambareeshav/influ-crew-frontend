@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
+import API_URL from "../config/apiConfig"
 import LogoutButton from "@/components/LogoutButton"
 import withAuth from "@/components/withAuth" // Import the HOC
 import axios from 'axios'
@@ -14,14 +15,19 @@ const AnalyzePage = () => {
   const [channels, setChannels] = useState('')
   const [result, setResult] = useState('')
   const [loading, setLoading] = useState(false) // {{ edit_1 }}
+  const [showAuthMessage, setShowAuthMessage] = useState(false) // {{ edit_1 }}
   const router = useRouter()
 
   const handleAnalyze = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true) // {{ edit_2 }}
+    const token = localStorage.getItem('accessToken') // {{ edit_2 }}
+    if (!token) { // {{ edit_3 }}
+      setShowAuthMessage(true) // Show authorization message
+      return; // Exit the function
+    }
+    setLoading(true) // {{ edit_4 }}
     try {
-      const token = localStorage.getItem('accessToken')
-      const response = await axios.post('https://influ-crew-backend-production.up.railway.app/analyze', 
+      const response = await axios.post(`${API_URL}/analyze`, 
         { keyword, channels: parseInt(channels) },
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -32,7 +38,7 @@ const AnalyzePage = () => {
         router.push('/authorize')
       }
     } finally {
-      setLoading(false) // {{ edit_3 }}
+      setLoading(false) // {{ edit_5 }}
     }
   }
 
@@ -42,6 +48,11 @@ const AnalyzePage = () => {
 
   return (
     <div className="flex min-h-screen bg-white text-black">
+      {showAuthMessage && ( // {{ edit_6 }}
+        <div className="alert alert-warning">
+          Please authorize first to proceed.
+        </div>
+      )}
       <Button onClick={handleBackToCrews} className="absolute top-4 left-4">Back to Crews</Button>
       <LogoutButton />
       <div className="container mx-auto mt-8">

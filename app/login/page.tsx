@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import axios from 'axios'
+import API_URL from "../config/apiConfig"
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -17,7 +18,7 @@ export default function LoginPage() {
     e.preventDefault()
     setErrorMessage('')  // Reset error message on new login attempt
     try {
-      const response = await axios.post('https://influ-crew-backend-production.up.railway.app/login', { email, password })
+      const response = await axios.post(`${API_URL}/login`, { email, password })
       localStorage.setItem('accessToken', response.data.access_token)
       router.push('/crews')
     } catch (error) {
@@ -30,6 +31,11 @@ export default function LoginPage() {
       console.error('Login failed:', error)
     }
   }
+
+  const tosignup = () => { // {{ edit_2 }}
+    router.push('/signup')
+  }
+
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
@@ -66,6 +72,7 @@ export default function LoginPage() {
           </CardContent>
           <CardFooter className="flex justify-between">
             <Button type="submit">Login</Button>
+            <Button onClick={tosignup} className="">Signup</Button>
           </CardFooter>
         </form>
       </Card>

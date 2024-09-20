@@ -7,18 +7,20 @@ import axios from 'axios'
 import { useRouter } from 'next/navigation' // {{ edit_1 }}
 import LogoutButton from "@/components/LogoutButton"
 import withAuth from "@/components/withAuth"
+import API_URL from "../config/apiConfig"
 
 const AuthorizePage = () => {
 const router = useRouter() // {{ edit_2 }}
 const [authUrl, setAuthUrl] = useState('')
 const [isAuthorized, setIsAuthorized] = useState(false)
+const [connectedAccountId] = useState('') // {{ edit_2 }}
 
 useEffect(() => {
   const checkAuthorization = async () => {
     const token = localStorage.getItem('accessToken')
     if (token) {
       try {
-        const response = await axios.post('https://influ-crew-backend-production.up.railway.app/authorize', {}, {
+        const response = await axios.post(`${API_URL}/authorize`, {}, {
           headers: { Authorization: `Bearer ${token}` }
         })
         setIsAuthorized(response.data.message.includes('already authenticated'))
@@ -43,12 +45,12 @@ const handleAuthorize = () => {
     window.open(authUrl, 'Authorize', 'width=600,height=600')
     startPolling() // {{ edit_2 }}
   }
-}
+} 
 
 const startPolling = () => { // {{ edit_3 }}
   const id = setInterval(async () => {
     const token = localStorage.getItem('accessToken')
-    const response = await axios.post('https://influ-crew-backend-production.up.railway.app/crews', {}, {
+    const response = await axios.post(`${API_URL}/crews`, {}, {
       headers: { Authorization: `Bearer ${token}` }
     })
     setIsAuthorized(response.data.message.includes('already authenticated'))
@@ -64,6 +66,26 @@ const handleBackToCrews = () => { // {{ edit_2 }}
   router.push('/crews')
 }
 
+/* const handleUnauthorize = async () => { // {{ edit_1 }}
+  const composio_key = process.env.COMPOSIO_API_KEY
+  const options: RequestInit = {
+    method: 'DELETE',
+    headers: {
+        'X-API-Key': `${composio_key}`
+    }
+};
+
+  fetch(`https://backend.composio.dev/api/v1/connectedAccounts/${connectedAccountId}`, options)
+      .then((response: Response) => response.json())
+      .then((response: any) => {
+        console.log(response);
+        if (response.success) { // Check if the response indicates success
+          setIsAuthorized(false); // Update authorization state
+        }
+      })
+      .catch((err: Error) => console.error(err));
+  };
+ */
 return (
   <div className="flex min-h-screen bg-white text-black">
     <Button onClick={handleBackToCrews} className="absolute top-4 left-4">Back to Crews</Button> {/* {{ edit_3 }} */}
@@ -75,7 +97,9 @@ return (
         </CardHeader>
         <CardContent>
           {isAuthorized ? (
-            <p>You are already authorized with Google Sheets</p>
+            <>
+              <p>You are already authorized with Google Sheets</p>
+            </>
           ) : (
             <Button onClick={handleAuthorize}>
               Authorize
@@ -83,6 +107,17 @@ return (
           )}
         </CardContent>
       </Card>
+      {/* {isAuthorized ? (
+            <>
+              <Button onClick={handleUnauthorize}>
+                UnAuthorize
+              </Button>
+            </>
+          ) : (
+            <Button onClick={handleUnauthorize}>
+              a
+            </Button>
+          )} */}
     </div>
   </div>
 )
