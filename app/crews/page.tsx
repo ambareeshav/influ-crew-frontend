@@ -17,7 +17,7 @@ const CrewsPage = () => {
     const fetchCrews = async () => {
       try {
         const token = localStorage.getItem('accessToken')
-        const response = await axios.get('http://127.0.0.1:8000/crews', {
+        const response = await axios.get('https://influ-crew-backend-production.up.railway.app/crews', {
           headers: { Authorization: `Bearer ${token}` }
         })
         setCrews(response.data)

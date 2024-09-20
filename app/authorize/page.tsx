@@ -18,7 +18,7 @@ useEffect(() => {
     const token = localStorage.getItem('accessToken')
     if (token) {
       try {
-        const response = await axios.post('http://127.0.0.1:8000/authorize', {}, {
+        const response = await axios.post('https://influ-crew-backend-production.up.railway.app/authorize', {}, {
           headers: { Authorization: `Bearer ${token}` }
         })
         setIsAuthorized(response.data.message.includes('already authenticated'))
