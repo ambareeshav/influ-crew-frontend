@@ -12,7 +12,7 @@ import API_URL from "../config/apiConfig"
 function AuthorizePage() {
   const router = useRouter()
   const [authUrl, setAuthUrl] = useState('')
-  const [isAuthorized, setIsAuthorized] = useState(false)
+  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null)
   const [isPolling, setIsPolling] = useState(false)
 
   const checkAuthorization = useCallback(async () => {
@@ -37,11 +37,8 @@ function AuthorizePage() {
   }, [])
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken')
-    if (token) {
-      checkAuthorization()
-    }
-  }, [checkAuthorization])
+    checkAuthorization().then(setIsAuthorized)
+  }, [])
 
   useEffect(() => {
     let pollingInterval: NodeJS.Timeout | null = null
@@ -70,6 +67,10 @@ function AuthorizePage() {
 
   const handleBackToCrews = () => {
     router.push('/crews')
+  }
+
+  if (isAuthorized === null) {
+    return <div className="flex justify-center items-center min-h-screen bg-white text-black">Checking Auth status...</div>
   }
 
   return (

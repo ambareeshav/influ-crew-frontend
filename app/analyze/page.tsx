@@ -1,32 +1,54 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { AlertCircle } from "lucide-react"
 import API_URL from "../config/apiConfig"
 import LogoutButton from "@/components/LogoutButton"
-import withAuth from "@/components/withAuth" // Import the HOC
+import withAuth from "@/components/withAuth"
 import axios from 'axios'
 
 const AnalyzePage = () => {
   const [keyword, setKeyword] = useState('')
   const [channels, setChannels] = useState('')
   const [result, setResult] = useState('')
-  const [loading, setLoading] = useState(false) // {{ edit_1 }}
-  const [showAuthMessage, setShowAuthMessage] = useState(false) // {{ edit_1 }}
+  const [loading, setLoading] = useState(false)
+  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null)
   const router = useRouter()
+
+  const checkAuthorization = async () => {
+    const token = localStorage.getItem('accessToken')
+    if (token) {
+      try {
+        const response = await axios.post(`${API_URL}/authorize`, {}, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        return response.data.message.includes('already authenticated')
+      } catch (error) {
+        console.error('Failed to check authorization:', error)
+        return false
+      }
+    }
+    return false
+  }
+
+  useEffect(() => {
+    checkAuthorization().then(setIsAuthorized)
+  }, [])
 
   const handleAnalyze = async (e: React.FormEvent) => {
     e.preventDefault()
-    const token = localStorage.getItem('accessToken') // {{ edit_2 }}
-    if (!token) { // {{ edit_3 }}
-      setShowAuthMessage(true) // Show authorization message
-      return; // Exit the function
+    if (!isAuthorized) {
+      router.push('/authorize')
+      return
     }
-    setLoading(true) // {{ edit_4 }}
+    setLoading(true)
     try {
+      const token = localStorage.getItem('accessToken')
       const response = await axios.post(`${API_URL}/analyze`, {
         keyword,
         channels: parseInt(channels)
@@ -37,65 +59,67 @@ const AnalyzePage = () => {
     } catch (error) {
       console.error('Analysis failed:', error)
       if (axios.isAxiosError(error) && error.response?.status === 401) {
+        setIsAuthorized(false)
         router.push('/authorize')
       }
     } finally {
-      setLoading(false) // {{ edit_5 }}
+      setLoading(false)
     }
   }
 
-  const handleBackToCrews = () => { // {{ edit_2 }}
-    router.push('/crews')
+  if (isAuthorized === null) {
+    return <div className="flex justify-center items-center min-h-screen bg-white text-black">Loading...</div>
   }
 
   return (
     <div className="flex min-h-screen bg-white text-black">
-      {showAuthMessage && ( // {{ edit_6 }}
-        <div className="alert alert-warning">
-          Please authorize first to proceed.
-        </div>
-      )}
-      <Button onClick={handleBackToCrews} className="absolute top-4 left-4">Back to Crews</Button>
+      <Button onClick={() => router.push('/crews')} className="absolute top-4 left-4">Back to Crews</Button>
       <LogoutButton />
       <div className="container mx-auto mt-8">
-        <Card className="w-[400px] mx-auto">
+        {!isAuthorized && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Authorization Required</AlertTitle>
+            <AlertDescription>
+              Please authorize with Google Sheets before analyzing.
+              <Button onClick={() => router.push('/authorize')} className="mt-2 w-full">
+                Go to Authorization Page
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
+        <Card className="w-full max-w-md mx-auto">
           <CardHeader>
             <CardTitle>Analyze Influencers</CardTitle>
           </CardHeader>
-          <form onSubmit={handleAnalyze}>
-            <CardContent>
+          <CardContent>
+            <form onSubmit={handleAnalyze}>
               <div className="grid w-full items-center gap-4">
-                <div className="flex flex-col space-y-1.5">
-                  <Input
-                    id="keyword"
-                    placeholder="Keyword"
-                    value={keyword}
-                    onChange={(e) => setKeyword(e.target.value)}
-                  />
-                </div>
-                <div className="flex flex-col space-y-1.5">
-                  <Input
-                    id="channels"
-                    placeholder="Number of Channels"
-                    type="number"
-                    value={channels}
-                    onChange={(e) => setChannels(e.target.value)}
-                  />
-                </div>
+                <Input
+                  id="keyword"
+                  placeholder="Keyword"
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                />
+                <Input
+                  id="channels"
+                  placeholder="Number of Channels"
+                  type="number"
+                  value={channels}
+                  onChange={(e) => setChannels(e.target.value)}
+                />
               </div>
-            </CardContent>
-            <CardFooter>
-              <Button type="submit" disabled={loading}>
-                {loading ? 'Analyzing...' : result ? 'Analyzed!' : 'Analyze'} {/* {{ edit_3 }} */}
+              <Button type="submit" className="w-full mt-4" disabled={loading || !isAuthorized}>
+                {loading ? 'Analyzing...' : result ? 'Analyzed!' : 'Analyze'}
               </Button>
-            </CardFooter>
-          </form>
+            </form>
+          </CardContent>
         </Card>
         {result && (
-          <Card className="w-[100px] h-[10px] mx-auto mt-8">
+          <Card className="w-full max-w-md mx-auto mt-8">
             <CardContent className="flex justify-center">
-              <Button type="submit" disabled={loading}>
-                <a href={result} target="_blank" rel="noopener noreferrer">Evaluation</a>
+              <Button type="button" disabled={loading}>
+                <a href={result} target="_blank" rel="noopener noreferrer" className="text-primary-foreground no-underline">Evaluation</a>
               </Button>
             </CardContent>
           </Card>
@@ -105,8 +129,4 @@ const AnalyzePage = () => {
   )
 }
 
-// Wrap the component with the HOC
-const AnalyzePageWithAuth = withAuth(AnalyzePage)
-
-// Default export for the page
-export default AnalyzePageWithAuth
+export default withAuth(AnalyzePage)

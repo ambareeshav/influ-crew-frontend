@@ -11,7 +11,7 @@ import withAuth from "@/components/withAuth" // {{ edit_1 }}
 
 const CrewsPage = () => {
   const [crews, setCrews] = useState<[string, string, number][]>([]) // Update state type to handle name, description, and availability
-  /* const [isSidebarOpen, setIsSidebarOpen] = useState(false) */
+
   const router = useRouter()
 
   useEffect(() => {
@@ -34,24 +34,14 @@ const CrewsPage = () => {
     router.push(`/analyze?crew=${crew}`)
   }
 
-/*   const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen)
-  }
- */
+
   return (
     <div className="flex min-h-screen bg-white text-black">
-      <LogoutButton /> {/* {{ edit_2 }} */}
-      {/* Sidebar toggle button */}
-      {/* <Button onClick={toggleSidebar} className="flex min-h-screen bg-black text-white hover:text-black hover:bg-black"></Button> */}
-
-      {/* Sidebar */}
-      {/* {isSidebarOpen && ( */}
+      <LogoutButton /> 
         <div className="w-64 bg-gray-200 text-black p-4 flex flex-col">
           <h2 className="text-xl font-bold mb-4"></h2>
           <Button onClick={() => router.push('/authorize')} className="bg-black text-white">Authorize</Button>
         </div>
-      {/* )} */}
-
       <div className="flex-1">
         <div className="container mx-auto mt-8">
           <h1 className="text-2xl font-bold mb-4 text-center">Available Crews</h1>
