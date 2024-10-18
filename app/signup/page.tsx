@@ -74,8 +74,8 @@ export default function SignupPage() {
             </div>
           </CardContent>
           <CardFooter className="flex justify-between">
-            <Button type="submit">Sign Up</Button>
-            <Button onClick={tologin} className="">Login</Button>
+            <Button type="submit" className = "hover:bg-primary/90 text-white font-bold rounded-full">Sign Up</Button>
+            <Button onClick={tologin} className="hover:bg-primary/90 text-white font-bold rounded-full ">Already have an account?</Button>
           </CardFooter>
         </form>
       </Card>

@@ -1,21 +1,27 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useState } from 'react'
 import { Button } from "@/components/ui/button"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import axios from 'axios'
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import LogoutButton from "@/components/LogoutButton"
 import withAuth from "@/components/withAuth"
-import API_URL from "../config/apiConfig"
+import { CheckCircle, XCircle, Loader2 } from 'lucide-react'
+import { motion } from 'framer-motion'
+
+/* import { useEffect, useState, useCallback } from 'react' */
+/* import axios from 'axios' */
+/* import API_URL from "../config/apiConfig" */
 
 function AuthorizePage() {
   const router = useRouter()
-  const [authUrl, setAuthUrl] = useState('')
-  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null)
+  const [authUrl] = useState('')
+  /* const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null) */
+  const [isAuthorized] = useState(true)
   const [isPolling, setIsPolling] = useState(false)
 
-  const checkAuthorization = useCallback(async () => {
+  /* const checkAuthorization = useCallback(async () => {
     const token = localStorage.getItem('accessToken')
     if (token) {
       try {
@@ -35,10 +41,10 @@ function AuthorizePage() {
     }
     return false
   }, [])
-
-  useEffect(() => {
+ */
+  /* useEffect(() => {
     checkAuthorization().then(setIsAuthorized)
-  }, [])
+  }, [checkAuthorization])
 
   useEffect(() => {
     let pollingInterval: NodeJS.Timeout | null = null
@@ -56,46 +62,124 @@ function AuthorizePage() {
     return () => {
       if (pollingInterval) clearInterval(pollingInterval)
     }
-  }, [isPolling, isAuthorized, checkAuthorization])
+  }, [isPolling, isAuthorized, checkAuthorization])*/
 
   const handleAuthorize = () => {
     if (authUrl) {
       window.open(authUrl, 'Authorize', 'width=600,height=600')
       setIsPolling(true)
     }
-  }
+  } 
 
-  const handleBackToCrews = () => {
+  /* const handleBackToCrews = () => {
     router.push('/crews')
+  } */
+
+
+  const popIn = {
+    hidden: { scale: 0.8, opacity: 0 },
+    visible: { scale: 1, opacity: 1, transition: { type: "spring", stiffness: 200, damping: 10 } }
   }
 
-  if (isAuthorized === null) {
-    return <div className="flex justify-center items-center min-h-screen bg-white text-black">Checking Auth status...</div>
-  }
+  /* if (isAuthorized === null) {
+    return (
+      <motion.div 
+        initial="hidden"
+        animate="visible"
+        variants={fadeIn}
+        className="flex justify-center items-center min-h-screen bg-gradient-to-b from-gray-50 to-white text-gray-800"
+      >
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <span className="ml-2 text-lg">Checking authorization status...</span>
+      </motion.div>
+    )
+  } */
 
   return (
-    <div className="flex min-h-screen bg-white text-black">
-      <Button onClick={handleBackToCrews} className="absolute top-4 left-4">Back to Crews</Button>
-      <LogoutButton />
-      <div className="container mx-auto mt-8">
-        <Card className="w-[400px] mx-auto">
-          <CardHeader>
-            <CardTitle>Authorize Google Sheets</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {isAuthorized ? (
-              <p>You are authorized with Google Sheets</p>
-            ) : (
-              <>
-                <Button onClick={handleAuthorize} disabled={isPolling}>
-                  {isPolling ? 'Authorizing...' : 'Authorize'}
-                </Button>
-                {isPolling && <p className="mt-2">Waiting for authorization...</p>}
-              </>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+    <div  className="min-h-screen bg-gradient-to-b from-gray-50 to-white text-gray-800 font-sans">
+      <header className="fixed top-0 left-0 right-0 flex justify-between items-center p-4 md:p-6 bg-white shadow-sm z-10">
+        <Link href="/" passHref>
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center space-x-2 cursor-pointer"
+          >
+            <h1 className="text-2xl font-bold text-primary">Demo</h1>
+          </motion.div>
+        </Link>
+        <nav className="space-x-4">
+          <Link href="/login">
+              <LogoutButton/>
+          </Link>
+        </nav>
+      </header>
+
+      <main className="pt-12 md:pt-14 max-w-4xl mx-auto mt-16 px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={popIn}>
+          <Card className="w-full max-w-md mx-auto shadow-lg">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold text-center text-primary">Authorize Google Sheets</CardTitle>
+            </CardHeader>
+            <CardContent className="text-center">
+              {isAuthorized ? (
+                <motion.div 
+                  className="flex flex-col items-center space-y-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}>
+                  <CheckCircle className="h-16 w-16 text-green-500" />
+                  <p className="text-lg font-medium">You are authorized with Google Sheets</p>
+                  <Button 
+                    onClick={() => router.push('/crews/IA-landing/IA')}
+                    className="bg-primary hover:bg-primary/90 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300"
+                  >
+                    Go to Analysis
+                  </Button>
+                </motion.div>
+              ) : (
+                <motion.div 
+                  className="flex flex-col items-center space-y-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <XCircle className="h-16 w-16 text-red-500" />
+                  <p className="text-lg font-medium">Authorization required</p>
+                  <Button 
+                    onClick={handleAuthorize} 
+                    disabled={isPolling}
+                    className="bg-primary hover:bg-primary/90 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300"
+                  >
+                    {isPolling ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Authorizing...
+                      </>
+                    ) : (
+                      'Authorize with Google Sheets'
+                    )}
+                  </Button>
+                </motion.div>
+              )}
+            </CardContent>
+            <CardFooter className="justify-center">
+              {isPolling && (
+                <motion.p 
+                  className="text-sm text-gray-500"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  Waiting for authorization... This may take a few moments.
+                </motion.p>
+              )}
+            </CardFooter>
+          </Card>
+        </motion.div>
+      </main>
     </div>
   )
 }

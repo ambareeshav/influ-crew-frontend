@@ -20,6 +20,7 @@ export default function LoginPage() {
     try {
       const response = await axios.post(`${API_URL}/login`, { email, password })
       localStorage.setItem('accessToken', response.data.access_token)
+      localStorage.setItem('Authorized', 'false')
       router.push('/crews')
     } catch (error) {
       // Check if error response exists and set the error message
@@ -71,8 +72,8 @@ export default function LoginPage() {
             </div>
           </CardContent>
           <CardFooter className="flex justify-between">
-            <Button type="submit">Login</Button>
-            <Button onClick={tosignup} className="">Signup</Button>
+            <Button type="submit" className="hover:bg-primary/90 text-white font-bold rounded-full">Login</Button>
+            <Button onClick={tosignup} className="hover:bg-primary/90 text-white font-bold rounded-full">Create a new account</Button>
           </CardFooter>
         </form>
       </Card>
