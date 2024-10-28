@@ -6,27 +6,27 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { AlertCircle, Search, Users, ChevronDown, ChevronUp } from "lucide-react"
+import { AlertCircle, Search, Users, ChevronDown, ChevronUp, Loader2 } from "lucide-react"
+import { useEffect } from 'react'
+import { motion } from 'framer-motion'
 import Link from 'next/link'
 import API_URL from "../../../config/apiConfig"
 import LogoutButton from "@/components/LogoutButton"
 import withAuth from "@/components/withAuth"
 import axios from 'axios'
-import { motion } from 'framer-motion'
+
 
 const AnalyzePage = () => {
   const [keyword, setKeyword] = useState('')
   const [channels, setChannels] = useState('')
   const [result, setResult] = useState('')
   const [loading, setLoading] = useState(false)
-/*const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null)
-  const [isAssistant, setIsAssistant] = useState<boolean | null>(null) */
-  const [isAuthorized, setIsAuthorized] = useState(true)
-  const [isAssistant] = useState(true)
+  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null)
+  /* const [isAssistant, setIsAssistant] = useState<boolean | null>(null) */
   const [showHowItWorks, setShowHowItWorks] = useState(false)
   const router = useRouter()
-
- /*  const checkAuthorization = async () => {
+  
+  const checkAuthorization = async () => {
     const token = localStorage.getItem('accessToken')
     if (token) {
       try {
@@ -42,7 +42,7 @@ const AnalyzePage = () => {
     return false
   }
 
-  const checkAssistant = async () => {
+  /* const checkAssistant = async () => {
     const token = localStorage.getItem('accessToken')
     if (token) {
       try {
@@ -56,23 +56,23 @@ const AnalyzePage = () => {
       }
     }
     return false
-  }
+  } */
 
   useEffect(() => {
     checkAuthorization().then(setIsAuthorized)
-    checkAssistant().then(setIsAssistant)
+    /* checkAssistant().then(setIsAssistant) */
   }, [])
- */
+
   const handleAnalyze = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!isAuthorized) {
       router.push('/authorize')
       return
     }
-    if (!isAssistant) {
+    /* if (!isAssistant) {
       router.push('/assistant')
       return
-    }
+    } */
     setLoading(true)
     try {
       const token = localStorage.getItem('accessToken')
@@ -99,18 +99,17 @@ const AnalyzePage = () => {
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
   }
 
-  if (isAuthorized === null || isAssistant === null) {
+  if (isAuthorized === null) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gradient-to-b from-gray-50 to-white text-gray-800">
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={fadeInUp}
-          className="text-2xl font-semibold text-[#1e0e4b]"
-        >
-          Loading...
-        </motion.div>
-      </div>
+      <motion.div 
+        initial="hidden"
+        animate="visible"
+        
+        className="flex justify-center items-center min-h-screen bg-gradient-to-b from-gray-50 to-white text-gray-800"
+      >
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <span className="ml-2 text-lg">Loading...</span>
+      </motion.div>
     )
   }
 
@@ -156,7 +155,7 @@ const AnalyzePage = () => {
               </AlertDescription>
             </Alert>
           )}
-          {!isAssistant && (
+          {/* {!isAssistant && (
             <Alert variant="destructive" className="mb-6">
               <AlertCircle className="h-4 w-4" />
               <AlertTitle>Assistant Required</AlertTitle>
@@ -167,7 +166,7 @@ const AnalyzePage = () => {
                 </Button>
               </AlertDescription>
             </Alert>
-          )}
+          )} */}
           <Card className="w-full shadow-lg">
             <CardHeader>
               <CardTitle className="text-3xl font-bold text-[#1e0e4b]">Analyze Influencers</CardTitle>
@@ -207,7 +206,7 @@ const AnalyzePage = () => {
                 <Button 
                   type="submit" 
                   className="w-full bg-gradient-to-r from-[#1e0e4b] to-[#4a3b6b] hover:from-[#4a3b6b] hover:to-[#1e0e4b] text-white font-semibold py-3 px-4 rounded-md transition-all duration-300 transform hover:scale-105"
-                  disabled={loading || !isAuthorized || !isAssistant}
+                  disabled={loading || !isAuthorized}
                 >
                   {loading ? 'Creating a google sheet...' : 'Start Analysis'}
                 </Button>

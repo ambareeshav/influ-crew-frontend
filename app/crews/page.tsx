@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import Link from 'next/link'
 import API_URL from "../config/apiConfig"
 import axios from 'axios'
-import withAuth from "@/components/withAuth"
 import { Users, AlertTriangle, CheckCircle } from 'lucide-react'
 import { motion } from 'framer-motion'
 
@@ -165,4 +164,4 @@ const CrewsPage = () => {
   )
 }
 
-export default withAuth(CrewsPage)
+export default CrewsPage

@@ -10,18 +10,18 @@ import withAuth from "@/components/withAuth"
 import { CheckCircle, XCircle, Loader2 } from 'lucide-react'
 import { motion } from 'framer-motion'
 
-/* import { useEffect, useState, useCallback } from 'react' */
-/* import axios from 'axios' */
-/* import API_URL from "../config/apiConfig" */
+import { useEffect, useCallback } from 'react'
+import axios from 'axios'
+import API_URL from "../config/apiConfig"
 
 function AuthorizePage() {
   const router = useRouter()
-  const [authUrl] = useState('')
-  /* const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null) */
-  const [isAuthorized] = useState(true)
+  const [authUrl, setAuthUrl] = useState('')
+  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null)
+  /* const [isAuthorized] = useState(true) */
   const [isPolling, setIsPolling] = useState(false)
 
-  /* const checkAuthorization = useCallback(async () => {
+  const checkAuthorization = useCallback(async () => {
     const token = localStorage.getItem('accessToken')
     if (token) {
       try {
@@ -41,8 +41,8 @@ function AuthorizePage() {
     }
     return false
   }, [])
- */
-  /* useEffect(() => {
+
+  useEffect(() => {
     checkAuthorization().then(setIsAuthorized)
   }, [checkAuthorization])
 
@@ -62,7 +62,7 @@ function AuthorizePage() {
     return () => {
       if (pollingInterval) clearInterval(pollingInterval)
     }
-  }, [isPolling, isAuthorized, checkAuthorization])*/
+  }, [isPolling, isAuthorized, checkAuthorization])
 
   const handleAuthorize = () => {
     if (authUrl) {
@@ -81,19 +81,19 @@ function AuthorizePage() {
     visible: { scale: 1, opacity: 1, transition: { type: "spring", stiffness: 200, damping: 10 } }
   }
 
-  /* if (isAuthorized === null) {
+  if (isAuthorized === null) {
     return (
       <motion.div 
         initial="hidden"
         animate="visible"
-        variants={fadeIn}
+        
         className="flex justify-center items-center min-h-screen bg-gradient-to-b from-gray-50 to-white text-gray-800"
       >
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
         <span className="ml-2 text-lg">Checking authorization status...</span>
       </motion.div>
     )
-  } */
+  }
 
   return (
     <div  className="min-h-screen bg-gradient-to-b from-gray-50 to-white text-gray-800 font-sans">

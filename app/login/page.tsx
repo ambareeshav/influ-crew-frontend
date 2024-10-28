@@ -20,8 +20,7 @@ export default function LoginPage() {
     try {
       const response = await axios.post(`${API_URL}/login`, { email, password })
       localStorage.setItem('accessToken', response.data.access_token)
-      localStorage.setItem('Authorized', 'false')
-      router.push('/crews')
+      router.push('/crews/IA-landing/IA')
     } catch (error) {
       // Check if error response exists and set the error message
       if (axios.isAxiosError(error) && error.response) {

@@ -8,6 +8,7 @@ export default function LogoutButton() {
 
   const handleLogout = () => {
     localStorage.removeItem('accessToken')
+    localStorage.removeItem('Authorized')
     router.push('/login') // Redirect to login page after logout
   }
 
