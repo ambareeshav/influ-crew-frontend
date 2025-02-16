@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation'
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from 'next/link'
-import API_URL from "../config/apiConfig"
-import axios from 'axios'
+/* import API_URL from "../config/apiConfig"
+import axios from 'axios' */
 import { Users, AlertTriangle, CheckCircle } from 'lucide-react'
 import { motion } from 'framer-motion'
 
@@ -27,7 +27,7 @@ const CrewsPage = () => {
     const fetchCrews = async () => {
       try {
         setLoading(true)
-        const token = localStorage.getItem('accessToken')
+        /* const token = localStorage.getItem('accessToken') */
         
         const response: [string, string, number][] = [
           ["Influencer Analysis", "Analyzes YouTube influencers based on your company's ICPs", 1], 
