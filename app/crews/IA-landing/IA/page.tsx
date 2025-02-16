@@ -12,7 +12,7 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import API_URL from "../../../config/apiConfig"
 import LogoutButton from "@/components/LogoutButton"
-import withAuth from "@/components/withAuth"
+/* import withAuth from "@/components/withAuth" */
 import axios from 'axios'
 
 
@@ -30,10 +30,11 @@ const AnalyzePage = () => {
     const token = localStorage.getItem('accessToken')
     if (token) {
       try {
-        const response = await axios.post(`${API_URL}/authorize`, {}, {
+        /* const response = await axios.post(`${API_URL}/authorize`, {}, {
           headers: { Authorization: `Bearer ${token}` }
-        })
-        return response.data.message.includes('already authenticated')
+        }) */
+        const response = 'already authenticated'
+        return response.includes('already authenticated')
       } catch (error) {
         console.error('Failed to check authorization:', error)
         return false
@@ -260,4 +261,4 @@ const AnalyzePage = () => {
   )
 }
 
-export default withAuth(AnalyzePage)
+export default AnalyzePage

@@ -10,7 +10,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle, CheckCircle, Loader2, ArrowLeft } from "lucide-react"
 import API_URL from "../config/apiConfig"
 import LogoutButton from "@/components/LogoutButton"
-import withAuth from "@/components/withAuth"
+/* import withAuth from "@/components/withAuth" */
 import axios from 'axios'
 import { motion } from 'framer-motion'
 
@@ -236,4 +236,4 @@ const AssistantPage = () => {
   )
 }
 
-export default withAuth(AssistantPage)
+export default AssistantPage

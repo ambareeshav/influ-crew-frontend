@@ -28,17 +28,23 @@ const CrewsPage = () => {
       try {
         setLoading(true)
         const token = localStorage.getItem('accessToken')
-        const response = await axios.get(`${API_URL}/crews`, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-        setCrews(response.data.map((crew: [string, string, number]) => ({
+        
+        const response: [string, string, number][] = [
+          ["Influencer Analysis", "Analyzes YouTube influencers based on your company's ICPs", 1], 
+          ["Default1", "-", 0],
+          ["Default2", "-", 0], 
+          ["Default3", "-", 0]
+        ];
+        
+        setCrews(response.map(crew => ({
           name: crew[0],
           description: crew[1],
           availability: crew[2]
-        })))
+        })));
+        
         setError(null)
       } catch (error) {
-        console.error('Failed to fetch crews:', error)
+        console.log('Failed to fetch crews:', error)
         setError('Failed to load crews. Please try again later.')
       } finally {
         setLoading(false)

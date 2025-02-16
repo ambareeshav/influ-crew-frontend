@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/componen
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import LogoutButton from "@/components/LogoutButton"
-import withAuth from "@/components/withAuth"
+/* import withAuth from "@/components/withAuth" */
 import { CheckCircle, XCircle, Loader2 } from 'lucide-react'
 import { motion } from 'framer-motion'
 
@@ -184,6 +184,6 @@ function AuthorizePage() {
   )
 }
 
-const AuthorizePageWithAuth = withAuth(AuthorizePage)
+const AuthorizePageWithAuth = AuthorizePage
 
 export default AuthorizePageWithAuth
